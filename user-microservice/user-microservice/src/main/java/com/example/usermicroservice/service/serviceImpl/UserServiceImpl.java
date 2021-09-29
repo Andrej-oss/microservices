@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         final User user = userDao.findById(id).get();
         final UserResponseDto userResponseDto = new UserResponseDto();
         final Department department = restTemplate
-                .getForObject("http://localhost:9001/department/" + user.getDepartmentId(), Department.class);
+                .getForObject("http://department-service/department/" + user.getDepartmentId(), Department.class);
         userResponseDto.setUser(user);
         userResponseDto.setDepartment(department);
         return userResponseDto;
