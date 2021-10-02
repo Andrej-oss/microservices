@@ -1,0 +1,44 @@
+server:
+  port: 9003
+
+spring:
+  application:
+    name: gatawey-service
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/user/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: user-service
+                fallbackuri: forward:/userServiceFallBack
+        - id: department-service
+          uri: lb://department-service
+          predicates:
+            - Path=/department/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: department-service
+                fallbackuri: forward:/departrmentServiceFallBack
+      filter:
+        hystrix:
+          enabled: true
+    circuitbreaker:
+      hystrix:
+        enabled: true
+  main:
+    web-application-type: reactive
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
+hystrix:
+  metrics:
+    polling-interval-ms: 2000
+    enabled: true
